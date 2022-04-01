@@ -1,0 +1,28 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "mocha": true,
+        "truffle/globals": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "truffle"
+    ],
+    "ignorePatterns": ["truffle-config.js", "tsconfig.json", "postcss.config.js", "webpack.config.js"],
+    "rules": {
+        "comma-dangle": ["error", "never"],
+        "semi": ["error", "always"]
+    }
+}
