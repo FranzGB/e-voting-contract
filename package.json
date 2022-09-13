@@ -75,10 +75,11 @@
   },
   "scripts": {
     "setup": "npm install && npm run ganache & npm run migrate & npm run start",
-    "test": "truffle test",
+    "test": "truffle test --network testing",
+    "ganache-test": "ganache -i testing -p 8546",
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "ganache": "ganache -i eVotingNetwork",
+    "ganache": "ganache -i development -p 8545",
     "migrate": "truffle migrate"
   },
   "keywords": [
