@@ -1,11 +1,11 @@
 const BallotContract = artifacts.require('BallotContract');
 
-contract('BallotContract', () => {
+contract('BallotContract', (accounts) => {
   before(async () => {
     this.ballotContract = await BallotContract.deployed();
   });
   describe('Deployment', () => {
-    it('migrate deployed succesully', async () => {
+    it('migrate deployed successfully', async () => {
       const address = this.ballotContract.address;
       assert.notEqual(address, null);
       assert.notEqual(address, undefined);
@@ -23,7 +23,10 @@ contract('BallotContract', () => {
       assert.equal(proposal.status, BallotContract.State.Created);
     });
     it('successfully creates a proposal', async () => {
-      const functionCall = await this.ballotContract.createProposal('My second proposal', 'For testing purposes');
+      const functionCall = await this.ballotContract.createProposal(
+        'My second proposal',
+        'For testing purposes'
+      );
       const proposalCounter = await this.ballotContract.proposalCounter();
       const proposal = await this.ballotContract.proposals(proposalCounter);
       assert.equal(functionCall.receipt.status, true);
@@ -34,12 +37,23 @@ contract('BallotContract', () => {
     });
     it('adds a voter to a proposal', async () => {
       const proposalCounter = await this.ballotContract.proposalCounter();
-      const functionCall = await this.ballotContract.addVoter(proposalCounter, '0x281d7c11C615C331312459458f7928A8303e9a6B', 'John Doe');
+      const functionCall = await this.ballotContract.addVoter(
+        proposalCounter,
+        accounts[0],
+        'John Doe'
+      );
       assert.equal(functionCall.receipt.status, true);
-      const voterName = await this.ballotContract.voterNames('0x281d7c11C615C331312459458f7928A8303e9a6B');
-      const voterRegistered = await this.ballotContract.voterRegister('0x281d7c11C615C331312459458f7928A8303e9a6B', proposalCounter);
-      const addVoterToRegister = await this.ballotContract.addVoter(proposalCounter, '0x3fcdf9781B69C7f8123519047BA3300e81E63F47', 'Testing Tester');
-      assert.equal(addVoterToRegister.receipt.status, true);
+      const voterName = await this.ballotContract.voterNames(accounts[0]);
+      const voterRegistered = await this.ballotContract.voterRegister(
+        accounts[0],
+        proposalCounter
+      );
+      const registerSomeVoter = await this.ballotContract.addVoter(
+        proposalCounter,
+        accounts[1],
+        'John Snow'
+      );
+      assert.equal(registerSomeVoter.receipt.status, true);
       assert.equal(voterRegistered, false);
       assert.equal(voterName, 'John Doe');
     });
@@ -52,14 +66,20 @@ contract('BallotContract', () => {
     });
     it('creates a vote in the proposal', async () => {
       const proposalCounter = await this.ballotContract.proposalCounter();
-      const exerciseVote = await this.ballotContract.doVote(proposalCounter, true);
+      const exerciseVote = await this.ballotContract.doVote(
+        proposalCounter,
+        true,
+        { from: accounts[1] }
+      );
       assert.equal(exerciseVote.receipt.status, true);
     });
     it('ends the voting on the proposal and returns the number of votes', async () => {
       const proposalCounter = await this.ballotContract.proposalCounter();
       const functionCall = await this.ballotContract.endVote(proposalCounter);
       const proposal = await this.ballotContract.proposals(proposalCounter);
-      const counters = await this.ballotContract.helperCounters(proposalCounter);
+      const counters = await this.ballotContract.helperCounters(
+        proposalCounter
+      );
       assert.equal(functionCall.receipt.status, true);
       assert.equal(proposal.status, BallotContract.State.Ended);
       assert.notEqual(counters.finalResult.toNumber(), 5);
