@@ -1,5 +1,5 @@
 name: Solidity CI
-
+run-name: ${{ github.actor }} is testing out new contracts 🚀
 on:
   push:
     paths:
@@ -16,7 +16,7 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
     env:
-      test_dir:
+      test_dir: .
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
