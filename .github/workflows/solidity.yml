@@ -38,7 +38,7 @@ jobs:
     - name: Lint contracts
       run: solhint "contracts/*.sol"
       working-directory: ${{ env.test_dir }}
-    - run: npm i -g ganache-cli truffle
+    - run: npm i -g ganache truffle
     - run: npm ci
       continue-on-error: true
       working-directory: ${{ env.test_dir }}
