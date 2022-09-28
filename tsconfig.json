@@ -1,26 +1,15 @@
 {
-  "compilerOptions": {
-      "target": "es5",
-      "lib": [
-          "dom",
-          "dom.iterable",
-          "esnext"
-      ],
-      "allowJs": true,
-      "skipLibCheck": true,
-      "esModuleInterop": false,
-      "allowSyntheticDefaultImports": true,
+    "compilerOptions": {
+      "jsx": "react",
+      "lib": ["ES2018", "DOM"],
+      "module": "CommonJS",
+      "target": "ES2018",
       "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": true,
-      "module": "esnext",
-      "moduleResolution": "node",
+      "esModuleInterop": true,
       "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": false,
-      "jsx": "react-jsx"
-  },
-  "include": [
-      "src"
-  ]
-}
+      "types": ["@types/node", "@types/chai", "@types/mocha"],
+      "typeRoots": ["./node_modules/@types", "./types"]
+    },
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules", "build", "cache", "artifacts"]
+  }

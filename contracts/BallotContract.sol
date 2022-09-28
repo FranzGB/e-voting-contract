@@ -11,29 +11,36 @@ contract BallotContract {
         uint256 createdAt;
         State status;
     }
+
     struct Vote {
         uint256 proposalId; //This id refers to the proposal
         bool choice; //Support or not
     }
+
     struct HelperCounter {
         uint256 finalResult;
         uint256 totalVoter;
         uint256 totalVote;
     }
 
+    enum State {
+        Created,
+        Voting,
+        Ended
+    }
+
+
     uint256 public proposalCounter = 0;
+
+    //MAPPINGS
 
     mapping(uint256 => uint256) private countResult;
     mapping(uint256 => HelperCounter) public helperCounters; //uint256 ProposalId
     mapping(address => string) public voterNames;
     mapping(uint256 => mapping(uint256 => Vote)) private votes; // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
     mapping(address => mapping(uint256 => bool)) public voterRegister;
-    enum State {
-        Created,
-        Voting,
-        Ended
-    }
     mapping(uint256 => VotingProposal) public proposals;
+
 
     //MODIFIERS
     modifier onlyOfficial(uint256 _id) {
