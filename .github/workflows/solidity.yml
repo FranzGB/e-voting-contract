@@ -4,7 +4,7 @@ on:
     paths:
       - 'contracts/**'
       - '.github/workflows/solidity.yml'
-      
+
 jobs:
   test:
     runs-on: ubuntu-latest
