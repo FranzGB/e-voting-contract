@@ -1,7 +1,6 @@
 name: Solidity CI
 run-name: ${{ github.actor }} is testing out new contracts 🚀
-on:
-  [push, pull_request]:
+on: [push, pull_request]
     paths:
       - 'contracts/**'
       - '.github/workflows/solidity.yml'
