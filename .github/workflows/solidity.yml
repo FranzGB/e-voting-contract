@@ -22,10 +22,13 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm i -g solhint
-    - run: solhint "contracts/*.sol"
-      working-directory: ${{ env.test_dir }}
+        node-version: ${{ matrix.node-version }}\
+    - name: Upgrade NPM
+      run: npm install -g npm
+    - name: Install & Lint Contracts
+      run: npm i -g solhint
+      run: solhint "contracts/*.sol"
+        working-directory: ${{ env.test_dir }}
     - run: npm i -g ganache-cli truffle
     - run: npm ci
       working-directory: ${{ env.test_dir }}
