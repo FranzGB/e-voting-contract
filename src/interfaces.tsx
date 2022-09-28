@@ -1,3 +1,4 @@
+import React from "react";
 
 export interface IProposal {
   createdAt: number;

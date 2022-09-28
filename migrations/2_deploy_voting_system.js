@@ -1,5 +1,5 @@
 const BallotContract = artifacts.require('BallotContract');
 
-module.exports = function (deployer) {
-  deployer.deploy(BallotContract);
+module.exports = async function (deployer) {
+  await deployer.deploy(BallotContract);
 };
