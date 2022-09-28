@@ -82,12 +82,10 @@
     "webpack-dev-server": "^4.7.2"
   },
   "scripts": {
-    "setup": "npm install && npm run ganache & npm run migrate & npm run start",
     "test": "truffle test",
-    "ganache-test": "ganache -i testing -p 8546",
-    "start": "webpack serve --mode development",
+    "dev": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "ganache": "ganache -i development -p 8545",
+    "ganache": "ganache -p 8545",
     "migrate": "truffle migrate",
     "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
     "postinstall": "truffle compile && npm run generate-types"
