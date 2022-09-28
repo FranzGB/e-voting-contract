@@ -37,7 +37,8 @@ contract BallotContract {
     mapping(uint256 => uint256) private countResult;
     mapping(uint256 => HelperCounter) public helperCounters; //uint256 ProposalId
     mapping(address => string) public voterNames;
-    mapping(uint256 => mapping(uint256 => Vote)) private votes; // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
+    mapping(uint256 => mapping(uint256 => Vote)) private votes;
+    // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
     mapping(address => mapping(uint256 => bool)) public voterRegister;
     mapping(uint256 => VotingProposal) public proposals;
 
