@@ -34,6 +34,6 @@ jobs:
       working-directory: ${{ env.test_dir }}
     - name: test
       run: |
-        ganache-cli -p 8545 &
+        npm run ganache &
         truffle test
       working-directory: ${{ env.test_dir }}
