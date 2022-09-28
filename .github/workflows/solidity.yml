@@ -21,10 +21,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Upgrade NPM
       run: npm install -g npm
+    - run: npm i -g solhint
     - name: Lint contracts
-      run:
-        npm i -g solhint &
-        solhint "contracts/*.sol"
+      run: solhint "contracts/*.sol"
       working-directory: ${{ env.test_dir }}
     - run: npm i -g ganache-cli truffle
     - run: npm ci
