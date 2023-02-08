@@ -1,7 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import { IProposal } from './interfaces';
-import ProposalComponent from "./ProposalComponent";
-import ProposalForm from "./ProposalForm";
+import ProposalComponent from "./components/ProposalComponent";
+import ProposalForm from "./components/ProposalForm";
 import Web3 from 'web3';
 const TruffleContract = require( '@truffle/contract' );
 import BallotContract from '../build/contracts/BallotContract.json';

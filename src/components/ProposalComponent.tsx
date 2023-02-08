@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IProposal, Status } from "./interfaces";
+import { IProposal, Status } from "../interfaces";
 import ConfirmationModal from "./ConfirmationModal";
 import web3 from "web3";
 interface ProposalComponentProps {
