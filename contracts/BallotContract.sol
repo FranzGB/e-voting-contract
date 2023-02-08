@@ -39,7 +39,7 @@ contract BallotContract {
     mapping(address => string) public voterNames;
     mapping(uint256 => mapping(uint256 => Vote)) private votes;
     // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
-    mapping(address => mapping(uint256 => bool)) public voterRegister;
+    mapping(address => mapping(uint256 => bool)) public voterRegistry;
     mapping(uint256 => VotingProposal) public proposals;
 
 
@@ -65,13 +65,27 @@ contract BallotContract {
         VotingProposal memory _proposal = proposals[_id];
         require(
             bytes(voterNames[msg.sender]).length != 0 &&
-                !voterRegister[msg.sender][_id],
+                !voterRegistry[msg.sender][_id],
             "The voter has already voted or is not registered"
         );
         _;
     }
 
     //EVENTS
+    event ProposalCreated(
+        uint256 proposalId,
+        address creatorAddress,
+        string officialName,
+        string description,
+        uint256 createdAt,
+        State status
+    );
+    event VoterAdded(
+        uint256 proposalId,
+        address voterAddress,
+        string voterName
+    );
+
     //FUNCTIONS
     constructor() {
         createProposal("My first proposal", "For testing purposes");
@@ -91,6 +105,14 @@ contract BallotContract {
             State.Created
         );
         helperCounters[proposalCounter] = HelperCounter(0, 0, 0);
+        emit ProposalCreated(
+            proposalCounter,
+            msg.sender,
+            _officialName,
+            _description,
+            block.timestamp,
+            State.Created
+        );
     }
 
     function addVoter(
@@ -100,7 +122,8 @@ contract BallotContract {
     ) public inState(State.Created, _proposalId) {
         helperCounters[_proposalId].totalVoter++;
         voterNames[_voterAddress] = _voterName;
-        voterRegister[_voterAddress][_proposalId] = false;
+        voterRegistry[_voterAddress][_proposalId] = false;
+        emit VoterAdded(_proposalId, _voterAddress, _voterName);
     }
 
     function startVote(uint256 _id)
@@ -118,7 +141,7 @@ contract BallotContract {
         hasNotVoted(_id)
         inState(State.Voting, _id)
     {
-        voterRegister[msg.sender][_id] = true;
+        voterRegistry[msg.sender][_id] = true;
         Vote memory v;
         v.proposalId = _id;
         v.choice = _choice;

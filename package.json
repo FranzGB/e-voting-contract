@@ -29,6 +29,7 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@typechain/truffle-v5": "^8.0.1",
+    "@typechain/web3-v1": "^6.0.2",
     "@types/bn.js": "^5.1.1",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
@@ -69,6 +70,7 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.1",
+    "truffle-assertions": "^0.9.2",
     "truffle-contract": "^4.0.31",
     "truffle-typings": "^1.0.8",
     "ts-loader": "^9.2.6",
@@ -85,9 +87,9 @@
     "test": "truffle test",
     "dev": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "ganache": "ganache -p 8545",
+    "ganache": "ganache -p 8545 -i 1",
     "migrate": "truffle migrate",
-    "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
+    "generate-types": "typechain --target=web3-v1 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
     "postinstall": "truffle compile && npm run generate-types"
   },
   "keywords": [

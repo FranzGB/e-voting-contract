@@ -3,3 +3,4 @@ build
 secret.*
 .DS_Store
 types/truffle-contracts
+types/*
