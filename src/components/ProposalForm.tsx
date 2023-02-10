@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { ContractContext } from '../ContractContext';
 
 interface ProposalFormProps {
-  account: string;
-  contract: any;
 }
-
-const ProposalForm: React.FunctionComponent<ProposalFormProps> = ({account, contract}) => {
+const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
+  const { account, contract } = useContext(ContractContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  async function createProposal(title:string, description:string, contract:any, account: string) {
-    console.log("Title: ", title,"Desc: ", description)
-    contract.createProposal(title, description, {
-      from: account
-    });
+
+  async function createProposal(title:string, description:string) {
+    if (!contract) return;
+    console.log(await contract.methods.createProposal(title, description).send({from: account}));
+    return ;
   }
   const onSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = ({account, cont
           value={description}
           onInput={e => setDescription(e.currentTarget.value)}
         />
-        <button className="btn btn-primary" onClick={() => createProposal(title,description,contract,account)}>Save</button>
+        <button className="btn btn-primary" onClick={() => createProposal(title,description)}>Save</button>
       </form>
     </div>
   );

@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { IProposal, Status } from "../interfaces";
 import ConfirmationModal from "./ConfirmationModal";
 import web3 from "web3";
+import { ContractContext } from "../ContractContext";
 interface ProposalComponentProps {
-  account: string;
   proposal: IProposal;
-  contract: any;
 }
 
 const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
-  account,
-  proposal,
-  contract,
+  proposal
 }) => {
   const {
     proposalId,
@@ -21,6 +18,7 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
     description,
     status,
   } = proposal;
+  const {account, contract} = useContext(ContractContext);
   const dateCreated = new Date(web3.utils.toNumber(createdAt) * 1000);
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,50 +26,32 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
   const [count, setCount] = useState({});
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const getProposalCounters = async (
-    contract: any,
-    proposalId: string,
-  ) => {
-    const counter = await contract.proposalCounter();
-    const counters:{} = await contract.helperCounters(web3.utils.toNumber(proposalId));
-    console.log(counters);
+  const getProposalCounters = async () => {
+    if (!contract) return;
+    const counters:{} = await contract.methods.helperCounters(web3.utils.toNumber(proposalId)).call();
   }
-  const registerVoter = async (
-    contract: any,
-    proposalId: string,
-    account: string
-  ) => {
-    contract.addVoter(proposalId, account, "John Doe", {
-      from: account,
-    });
+  const registerVoter = async () => {
+    if (!contract) return;
+    return contract.methods.addVoter(proposalId, account, "John Doe").call();
   };
-  const initiateVote = async (
-    contract: any,
-    proposalId: string,
-    account: string
-  ) => {
-    contract.startVote(proposalId, {
-      from: account,
-    });
+  const initiateVote = async () => {
+    if (!contract) return;
+    return contract.methods.startVote(proposalId).call(
+      {
+        from: account
+      }
+    );
   };
-  const castVote = async (
-    contract: any,
-    proposalId: string,
-    account: string
-  ) => {
-    contract.doVote(proposalId, true, {
-      from: account,
-    });
+  const castVote = async (choice: boolean) => {
+
+    if (!contract) return;
+    return contract.methods.doVote(proposalId, choice).call();
   };
-  const endVote = async (
-    contract: any,
-    proposalId: string,
-    account: string
-  ) => {
-    contract.endVote(proposalId, {
-      from: account,
-    });
+  const endVote = async () => {
+    if (!contract) return;
+    return contract.methods.endVote(proposalId).call();
   };
+
   const messages = {
     Initiate:
       "Are you sure you want to initiate the vote casting? Users will not be able to register on the electoral roll any more.",
@@ -81,8 +61,9 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
     End: "Are you sure you want to end the vote on this proposal?",
   };
   useEffect(() => {
-    getProposalCounters(contract, proposalId);
+    getProposalCounters();
   }, [count]);
+
   return (
     <>
       <ConfirmationModal
@@ -109,11 +90,11 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
           <div className="d-flex row justify-content-around">
             <button
               className="col-2 btn btn-success"
-              disabled={!(status == 0 && account == creatorAddress)}
+              disabled={!(status == "Created")}
               onClick={() => {
                 setMessage(messages.Register);
                 setFun(
-                  () => () => registerVoter(contract, proposalId, account)
+                  () => () => registerVoter()
                 );
                 handleShow();
               }}
@@ -122,10 +103,10 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
             </button>
             <button
               className="col-2 btn btn-warning"
-              disabled={!(status == 0)}
+              disabled={!(status == "0")}
               onClick={() => {
                 setMessage(messages.Register);
-                setFun(() => () => initiateVote(contract, proposalId, account));
+                setFun(() => () => initiateVote());
                 handleShow();
               }}
             >
@@ -133,10 +114,10 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
             </button>
             <button
               className="col-2 btn btn-info"
-              disabled={!(status == 1)}
+              disabled={!(status == "1")}
               onClick={() => {
                 setMessage(messages.Vote);
-                setFun(() => () => castVote(contract, proposalId, account));
+                setFun(() => () => castVote(true));
                 handleShow();
               }}
             >
@@ -144,10 +125,10 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
             </button>
             <button
               className="col-2 btn btn-danger"
-              disabled={!(status == 1 && account == creatorAddress)}
+              disabled={!(status == "1" && account == creatorAddress)}
               onClick={() => {
                 setMessage(messages.End);
-                setFun(() => () => endVote(contract, proposalId, account));
+                setFun(() => () => endVote());
                 handleShow();
               }}
             >

@@ -1,12 +1,12 @@
 import React from "react";
 
 export interface IProposal {
-  createdAt: number;
+  createdAt: string;
   creatorAddress: string;
   description: string;
   officialName: string;
   proposalId: string;
-  status: number;
+  status: string;
 };
 interface IStatus<>{
   [idx:string]: {title: string, badge: JSX.Element};
