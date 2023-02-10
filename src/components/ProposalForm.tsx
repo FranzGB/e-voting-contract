@@ -10,9 +10,19 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
 
   async function createProposal(title:string, description:string) {
     if (!contract) return;
-    console.log(await contract.methods.createProposal(title, description).send({from: account}));
+    contract.methods.createProposal(title, description).send({from: account})
+      .then((_: any) => {
+        clearFields();
+      })
+    ;
     return ;
   }
+
+  const clearFields = () => {
+    setTitle("");
+    setDescription("");
+  };
+
   const onSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
   };

@@ -10,6 +10,7 @@ interface ProposalComponentProps {
 const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
   proposal
 }) => {
+
   const {
     proposalId,
     officialName,
@@ -18,6 +19,7 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
     description,
     status,
   } = proposal;
+
   const {account, contract} = useContext(ContractContext);
   const dateCreated = new Date(web3.utils.toNumber(createdAt) * 1000);
   const [show, setShow] = useState(false);
@@ -32,11 +34,15 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
   }
   const registerVoter = async () => {
     if (!contract) return;
-    return contract.methods.addVoter(proposalId, account, "John Doe").call();
+    return contract.methods.addVoter(proposalId, account, "John Doe").send(
+      {
+        from: account
+      }
+    );
   };
   const initiateVote = async () => {
     if (!contract) return;
-    return contract.methods.startVote(proposalId).call(
+    return contract.methods.startVote(proposalId).send(
       {
         from: account
       }
@@ -45,20 +51,26 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
   const castVote = async (choice: boolean) => {
 
     if (!contract) return;
-    return contract.methods.doVote(proposalId, choice).call();
+    return contract.methods.doVote(proposalId, choice).send(
+      {
+        from: account
+      }
+    );
   };
   const endVote = async () => {
     if (!contract) return;
-    return contract.methods.endVote(proposalId).call();
+    return contract.methods.endVote(proposalId).send(
+      {
+        from: account
+      }
+    );
   };
 
   const messages = {
-    Initiate:
-      "Are you sure you want to initiate the vote casting? Users will not be able to register on the electoral roll any more.",
-    Register:
-      "Are you sure you want to register on this proposal to cast a vote when it begins?",
-    Vote: "Are you in support or against this proposal?",
-    End: "Are you sure you want to end the vote on this proposal?",
+    Initiate: "Confirm initiation of vote casting. No further registrations will be allowed on the electoral roll.",
+    Register: "Confirm your registration to cast a vote when voting begins.",
+    Vote: "Choose whether you support or oppose this proposal.",
+    End: "Confirm ending of voting on this proposal.",
   };
   useEffect(() => {
     getProposalCounters();
@@ -85,55 +97,63 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
         <div className="card-body">
           <span className="d-block my-2">{description}</span>
           {Status[status].title == "Ended" && <span>
-            Total count: {JSON.stringify(count)}
+            Total count: {}
             </span>}
           <div className="d-flex row justify-content-around">
+            {status == "0" && (
             <button
-              className="col-2 btn btn-success"
-              disabled={!(status == "Created")}
+              className="col-4 btn btn-success"
+              disabled={!(account == creatorAddress)}
               onClick={() => {
-                setMessage(messages.Register);
+                setMessage(messages.Initiate);
                 setFun(
-                  () => () => registerVoter()
+                  () => () => initiateVote()
                 );
                 handleShow();
               }}
             >
               Initiate
             </button>
+            )}
+            {status == "0" && (
             <button
-              className="col-2 btn btn-warning"
-              disabled={!(status == "0")}
+              className="col-4 btn btn-warning"
               onClick={() => {
                 setMessage(messages.Register);
-                setFun(() => () => initiateVote());
+                setFun(() => () => registerVoter());
                 handleShow();
               }}
             >
               Register
             </button>
+            )}
+            {
+              status == "1" && (
+              <button
+                className="col-4 btn btn-info"
+                disabled={false}
+                onClick={() => {
+                  setMessage(messages.Vote);
+                  setFun(() => () => castVote(true));
+                  handleShow();
+                }}
+              >
+                Vote
+              </button>
+            )}
+            {status == "1" && (
             <button
-              className="col-2 btn btn-info"
-              disabled={!(status == "1")}
-              onClick={() => {
-                setMessage(messages.Vote);
-                setFun(() => () => castVote(true));
-                handleShow();
-              }}
-            >
-              Vote
-            </button>
-            <button
-              className="col-2 btn btn-danger"
-              disabled={!(status == "1" && account == creatorAddress)}
-              onClick={() => {
-                setMessage(messages.End);
-                setFun(() => () => endVote());
-                handleShow();
-              }}
+            className="col-4 btn btn-danger"
+            disabled={!(account == creatorAddress)}
+            onClick={() => {
+              setMessage(messages.End);
+              setFun(() => () => endVote());
+              handleShow();
+            }}
             >
               End
             </button>
+            )}
           </div>
         </div>
       </div>
