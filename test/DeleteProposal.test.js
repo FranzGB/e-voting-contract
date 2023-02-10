@@ -21,6 +21,7 @@ contract("Ballot Contract", async accounts => {
       assert.strictEqual(proposal.officialName, "");
       assert.strictEqual(proposal.description, "");
       assert.strictEqual(proposal.status.toNumber(), 0);
+
     });
 
     it("should fail if the proposal is not in the created state", async () => {
