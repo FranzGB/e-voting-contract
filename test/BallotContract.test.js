@@ -3,6 +3,7 @@ const BallotContract = artifacts.require('BallotContract');
 const truffleAssert = require('truffle-assertions');
 
 contract('BallotContract', function (accounts) {
+  let ballotContract;
   before(async () => {
     ballotContract = await BallotContract.deployed();
   });

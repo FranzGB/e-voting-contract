@@ -29,7 +29,6 @@ contract BallotContract {
         Ended
     }
 
-
     uint256 public proposalCounter = 0;
 
     //MAPPINGS
@@ -42,13 +41,12 @@ contract BallotContract {
     mapping(address => mapping(uint256 => bool)) public voterRegistry;
     mapping(uint256 => VotingProposal) public proposals;
 
-
     //MODIFIERS
     modifier onlyOfficial(uint256 _id) {
         VotingProposal memory _proposal = proposals[_id];
         require(
             _proposal.creatorAddress == msg.sender,
-            "Only the official can call this function"
+            "Error: You are not the official who created this proposal. Only the official can call this function"
         );
         _;
     }
@@ -57,16 +55,17 @@ contract BallotContract {
         VotingProposal memory _proposal = proposals[_id];
         require(
             _proposal.status == _state,
-           "The proposal is not in the correct state"
+            "Error: The proposal is not in the state required to perform this action"
         );
         _;
     }
+
     modifier hasNotVoted(uint256 _id) {
         VotingProposal memory _proposal = proposals[_id];
         require(
             bytes(voterNames[msg.sender]).length != 0 &&
                 !voterRegistry[msg.sender][_id],
-            "The voter has already voted or is not registered"
+            "Error: You have already cast your vote on this proposal or you are not registered as a voter"
         );
         _;
     }
@@ -85,6 +84,9 @@ contract BallotContract {
         address voterAddress,
         string voterName
     );
+    event VoteDone(uint256 proposalId);
+    event VotingStarted(uint256 proposalId);
+    event VotingEnded(uint256 proposalId, uint256 finalResult);
 
     //FUNCTIONS
     constructor() {
@@ -126,6 +128,14 @@ contract BallotContract {
         emit VoterAdded(_proposalId, _voterAddress, _voterName);
     }
 
+    function deleteProposal(uint256 _id)
+        public
+        inState(State.Created, _id)
+        onlyOfficial(_id)
+    {
+        delete proposals[_id];
+    }
+
     function startVote(uint256 _id)
         public
         inState(State.Created, _id)
@@ -134,6 +144,7 @@ contract BallotContract {
         VotingProposal memory _proposal = proposals[_id];
         _proposal.status = State.Voting;
         proposals[_id] = _proposal;
+        emit VotingStarted(_id);
     }
 
     function doVote(uint256 _id, bool _choice)
@@ -150,6 +161,7 @@ contract BallotContract {
         }
         votes[_id][helperCounters[_id].totalVote++] = v;
         helperCounters[_id].totalVote++;
+        emit VoteDone(_id);
     }
 
     function endVote(uint256 _id)
@@ -161,5 +173,6 @@ contract BallotContract {
         _proposal.status = State.Ended;
         proposals[_id] = _proposal;
         helperCounters[_id].finalResult = countResult[_id];
+        emit VotingEnded(_id, countResult[_id]);
     }
 }
