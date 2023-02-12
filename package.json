@@ -92,7 +92,7 @@
     "test": "npm run test:ganache & npm run test:truffle",
     "dev": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "ganache": "ganache -p 8545 -i 1",
+    "ganache": "ganache-cli -p 8545 -i 1",
     "migrate": "truffle migrate && npm run generate-types",
     "generate-types": "typechain --target=web3-v1 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
     "postinstall": "truffle compile && npm run generate-types"
