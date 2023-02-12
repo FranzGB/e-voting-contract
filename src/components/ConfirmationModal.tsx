@@ -22,8 +22,8 @@ const ConfirmationModal: React.FunctionComponent<IConfirmationModalProps>= ({sho
       </Modal.Body>
 
       <Modal.Footer className='bg-dark'>
-        <Button variant="secondary" onClick={handleClose}>No</Button>
         <Button variant="primary" onClick={()=> {handleSubmit(); handleClose();}}>Yes</Button>
+        <Button variant="secondary" onClick={handleClose}>No</Button>
       </Modal.Footer>
     </Modal>
   );

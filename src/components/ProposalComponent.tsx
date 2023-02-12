@@ -3,6 +3,8 @@ import { IProposal, Status } from "../interfaces";
 import ConfirmationModal from "./ConfirmationModal";
 import web3 from "web3";
 import { ContractContext } from "../ContractContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 interface ProposalComponentProps {
   proposal: IProposal;
 }
@@ -20,17 +22,17 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
     status,
   } = proposal;
 
-  const {account, contract} = useContext(ContractContext);
+  const { account, contract } = useContext(ContractContext);
   const dateCreated = new Date(web3.utils.toNumber(createdAt) * 1000);
-  const [show, setShow] = useState(false);
-  const [message, setMessage] = useState("");
-  const [fun, setFun] = useState<() => void>();
-  const [count, setCount] = useState({});
+  const [ show, setShow ] = useState(false);
+  const [ message, setMessage ] = useState("");
+  const [ fun, setFun ] = useState<() => void>();
+  const [ count, setCount ] = useState({});
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const getProposalCounters = async () => {
     if (!contract) return;
-    const counters:{} = await contract.methods.helperCounters(web3.utils.toNumber(proposalId)).call();
+    const counters: {} = await contract.methods.helperCounters(web3.utils.toNumber(proposalId)).call();
   }
   const registerVoter = async () => {
     if (!contract) return;
@@ -72,9 +74,18 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
     Vote: "Choose whether you support or oppose this proposal.",
     End: "Confirm ending of voting on this proposal.",
   };
+
+  const removeProposal = async () => {
+    if (!contract) return;
+    return contract.methods.deleteProposal(proposalId).send(
+      {
+        from: account
+      });
+  };
+
   useEffect(() => {
     getProposalCounters();
-  }, [count]);
+  }, [ count ]);
 
   return (
     <>
@@ -84,75 +95,88 @@ const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
         handleSubmit={fun!}
         message={message}
       />
-      <div className="card bg-dark rounded-0 mb-2">
-        <div className="card-header d-flex flex-column justify-content-between align-items-start">
-          <span className="fw-bold align-self-center">{officialName}</span>
-          <span className="fw-light fst-italic creator-info">
-            Created by: {creatorAddress} at {dateCreated.toDateString()}{" "}
-          </span>
-          <span className="fw-light d-block">
-            Status: {Status[status].badge}
-          </span>
+      <div className="card bg-dark rounded-0 mb-2 container">
+        <div className="card-header d-flex align-items-start row">
+            <div className="d-flex flex-column col-11">
+              <span className="fw-bold align-self-center">{officialName}</span>
+              <span className="fw-light fst-italic creator-info">
+                Created by: {creatorAddress} at {dateCreated.toDateString()}
+              </span>
+              <span className="fw-light d-block">
+                Status: {Status[ status ].badge}
+              </span>
+            </div>
+            <button
+              className="btn btn-sm btn-danger align-self-center col-1"
+              disabled={!(account == creatorAddress) || !(status == "0")}
+              onClick={() => {
+                setMessage("Confirm removal of this proposal.");
+                setFun(() => () => removeProposal());
+                handleShow();
+              }}
+            >
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </button>
         </div>
         <div className="card-body">
           <span className="d-block my-2">{description}</span>
-          {Status[status].title == "Ended" && <span>
-            Total count: {}
-            </span>}
+          {Status[ status ].title == "Ended" && <span>
+            Total count: { }
+          </span>}
           <div className="d-flex row justify-content-around">
             {status == "0" && (
-            <button
-              className="col-4 btn btn-success"
-              disabled={!(account == creatorAddress)}
-              onClick={() => {
-                setMessage(messages.Initiate);
-                setFun(
-                  () => () => initiateVote()
-                );
-                handleShow();
-              }}
-            >
-              Initiate
-            </button>
-            )}
-            {status == "0" && (
-            <button
-              className="col-4 btn btn-warning"
-              onClick={() => {
-                setMessage(messages.Register);
-                setFun(() => () => registerVoter());
-                handleShow();
-              }}
-            >
-              Register
-            </button>
-            )}
-            {
-              status == "1" && (
               <button
-                className="col-4 btn btn-info"
-                disabled={false}
+                className="col-4 btn btn-success"
+                disabled={!(account == creatorAddress)}
                 onClick={() => {
-                  setMessage(messages.Vote);
-                  setFun(() => () => castVote(true));
+                  setMessage(messages.Initiate);
+                  setFun(
+                    () => () => initiateVote()
+                  );
                   handleShow();
                 }}
               >
-                Vote
+                Initiate
               </button>
             )}
+            {status == "0" && (
+              <button
+                className="col-4 btn btn-warning"
+                onClick={() => {
+                  setMessage(messages.Register);
+                  setFun(() => () => registerVoter());
+                  handleShow();
+                }}
+              >
+                Register
+              </button>
+            )}
+            {
+              status == "1" && (
+                <button
+                  className="col-4 btn btn-info"
+                  disabled={false}
+                  onClick={() => {
+                    setMessage(messages.Vote);
+                    setFun(() => () => castVote(true));
+                    handleShow();
+                  }}
+                >
+                  Vote
+                </button>
+              )}
             {status == "1" && (
-            <button
-            className="col-4 btn btn-danger"
-            disabled={!(account == creatorAddress)}
-            onClick={() => {
-              setMessage(messages.End);
-              setFun(() => () => endVote());
-              handleShow();
-            }}
-            >
-              End
-            </button>
+              <button
+                className="col-4 btn btn-danger"
+                disabled={!(account == creatorAddress)}
+                onClick={() => {
+                  setMessage(messages.End);
+                  setFun(() => () => endVote());
+                  handleShow();
+                }}
+              >
+                End
+              </button>
             )}
           </div>
         </div>
