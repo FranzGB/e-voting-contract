@@ -52,7 +52,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
         <textarea
           name="description"
           placeholder="Explain your idea"
-          rows={10}
+          rows={15}
           className="form-control bg-dark text-white border-0 my-4"
           value={description}
           onInput={e => setDescription(e.currentTarget.value)}

@@ -17,8 +17,7 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
-        "truffle"
+        "react"
     ],
     "ignorePatterns": ["truffle-config.js", "tsconfig.json", "postcss.config.js", "webpack.config.js"],
     "rules": {

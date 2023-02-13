@@ -8,19 +8,9 @@ FROM base as truffle
 
 COPY package.json package-lock.json ./
 
-RUN npm install --quiet
+RUN npm install
 
-COPY truffle-config.js /home/app
-COPY contracts /home/app/contracts
-COPY migrations /home/app/migrations/
-COPY test /home/app/test/
+COPY . .
+RUN npm run test
 
-RUN truffle compile
-RUN truffle migrate
-
-FROM base as ganache-cli
-
-EXPOSE 8545
-
-CMD ["ganache-cli", "-p", "8545", "-i", "1"]
 

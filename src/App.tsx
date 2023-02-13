@@ -8,7 +8,6 @@ import './main.css';
 import Web3 from 'web3';
 import { BallotContract } from '../types/web3-v1-contracts';
 import ProposalListContainer from './components/ProposalListContainer';
-import { set } from 'ramda';
 
 interface AppProps {
 
