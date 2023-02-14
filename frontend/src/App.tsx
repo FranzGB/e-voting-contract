@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import { IProposal } from "./interfaces";
 import ProposalForm from "./components/ProposalForm";
 import { ContractContext } from "./ContractContext";
-import ballotContractJson from "../../build/contracts/BallotContract.json";
+import ballotContractJson from "../public/contracts/BallotContract.json";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./main.css";
 import Web3 from "web3";
 import { BallotContract } from "../../types/web3-v1-contracts";
 import ProposalListContainer from "./components/ProposalListContainer";
-
+import { NETWORK_URL, NETWORK_ID } from "./constants";
 interface AppProps {}
 
 const App: React.FunctionComponent<AppProps> = () => {
-  const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+  const web3 = new Web3(Web3.givenProvider || NETWORK_URL);
 
   const [account, setAccount] = useState("");
   const [contract, setContract] = useState<BallotContract | null>(null);
@@ -24,7 +24,7 @@ const App: React.FunctionComponent<AppProps> = () => {
   }
   async function getBallotContract() {
     const contractAbi = ballotContractJson.abi as AbiItem[];
-    const contractNetwork = ballotContractJson.networks["1"].address;
+    const contractNetwork = ballotContractJson.networks[NETWORK_ID].address;
     const ballotContract = new web3.eth.Contract(
       contractAbi,
       contractNetwork

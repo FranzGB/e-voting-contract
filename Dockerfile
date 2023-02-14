@@ -3,16 +3,29 @@ FROM node:16
 # Set the working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
-COPY package.json ./
-COPY package-lock.json ./
-
-
 # Copy the rest of the application files
-COPY ./contracts ./contracts
+COPY . .
 
 # Install the dependencies
-RUN npm ci --only=production
+RUN npm i -g truffle
 
 # Run the application
-CMD [ "npm", "start" ]
+RUN truffle compile
+
+# Copy built contract to frontend public/contracts folder
+RUN cp -r /app/build/contracts /app/frontend/public/contracts
+
+# Change the working directory to the frontend
+WORKDIR /app/frontend
+
+# Install frontend dependencies
+RUN npm ci
+
+# Build the frontend
+RUN npm run build
+
+# Expose the port
+EXPOSE 3000
+
+# Run the application
+CMD ["npm", "run", "start"]
