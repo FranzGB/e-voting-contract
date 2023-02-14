@@ -1,21 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { ContractContext } from '../ContractContext';
+import React, { useContext, useState } from "react";
+import { ContractContext } from "../ContractContext";
 
-interface ProposalFormProps {
-}
+interface ProposalFormProps {}
 const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
   const { account, contract } = useContext(ContractContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  async function createProposal(title:string, description:string) {
+  async function createProposal(title: string, description: string) {
     if (!contract) return;
-    contract.methods.createProposal(title, description).send({from: account})
+    contract.methods
+      .createProposal(title, description)
+      .send({ from: account })
       .then((_: any) => {
         clearFields();
-      })
-    ;
-    return ;
+      });
+    return;
   }
 
   const clearFields = () => {
@@ -23,7 +23,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
     setDescription("");
   };
 
-  const onSubmit = (e: { preventDefault: () => void; }) => {
+  const onSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
   };
 
@@ -47,7 +47,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
           placeholder="Title"
           className="form-control bg-dark text-white border-0 my-4"
           value={title}
-          onInput={e => setTitle(e.currentTarget.value)}
+          onInput={(e) => setTitle(e.currentTarget.value)}
         />
         <textarea
           name="description"
@@ -55,9 +55,14 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
           rows={15}
           className="form-control bg-dark text-white border-0 my-4"
           value={description}
-          onInput={e => setDescription(e.currentTarget.value)}
+          onInput={(e) => setDescription(e.currentTarget.value)}
         />
-        <button className="btn btn-primary" onClick={() => createProposal(title,description)}>Save</button>
+        <button
+          className="btn btn-primary"
+          onClick={() => createProposal(title, description)}
+        >
+          Save
+        </button>
       </form>
     </div>
   );
