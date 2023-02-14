@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "ganache": "^7.7.4",
-    "truffle": "^5.4.23"
+    "truffle": "^5.4.23",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@typechain/truffle-v5": "^8.0.1",
@@ -34,11 +35,10 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
-    "test:ganache": "ganache -p 8546 -i 2",
+    "test:ganache": "ganache -p 8546 -i 2 --quiet",
     "test:truffle": "truffle test --network testing",
     "test": "npm run test:ganache & npm run test:truffle",
-    "dev": "webpack serve --mode development",
-    "build": "webpack --mode production",
+    "posttest": "kill $(lsof -t -i:8546)",
     "ganache": "ganache -p 8545 -i 1",
     "migrate": "truffle migrate && npm run generate-types",
     "generate-types": "typechain --target=web3-v1 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
