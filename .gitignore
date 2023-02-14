@@ -4,3 +4,4 @@ secret.*
 .DS_Store
 types/*
 dist
+public
