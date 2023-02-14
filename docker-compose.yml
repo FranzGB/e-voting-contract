@@ -2,20 +2,24 @@ version: '3'
 
 services:
   ganache:
-    image: trufflesuite/ganache-cli
+    image: trufflesuite/ganache
     command: ganache-cli -h 0.0.0.0 -i 1 -p 8545
     ports:
       - "8545:8545"
-    volumes:
-      - ./contracts:/app/contracts
+
+  truffle:
+    build: .
+    depends_on:
+      - ganache
 
   frontend:
     build:
-      context: ./frontend/docker/
+      context: ./frontend/
       dockerfile: Dockerfile.production
     ports:
       - "3000:3000"
     depends_on:
       - ganache
+      - truffle
     environment:
-      - REACT_APP_ETH_NETWORK=http://ganache:8545
+      NODE_ENV: production

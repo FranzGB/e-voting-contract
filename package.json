@@ -35,14 +35,14 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
+    "start": "truffle migrate --reset --compile-all",
     "test:ganache": "ganache -p 8546 -i 2 --quiet",
     "test:truffle": "truffle test --network testing",
     "test": "npm run test:ganache & npm run test:truffle",
     "posttest": "kill $(lsof -t -i:8546)",
     "ganache": "ganache -p 8545 -i 1",
-    "migrate": "truffle migrate && npm run generate-types",
-    "generate-types": "typechain --target=web3-v1 'build/contracts/*.json' --always-generate-overloads --discriminate-types",
-    "postinstall": "truffle compile && npm run generate-types"
+    "compile": "truffle compile && npm run generate-types",
+    "generate-types": "typechain --target=web3-v1 'build/contracts/*.json' --always-generate-overloads --discriminate-types"
   },
   "keywords": [
     "e-voting",
