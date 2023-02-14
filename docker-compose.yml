@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  ganache:
+    image: trufflesuite/ganache-cli
+    command: ganache-cli -h 0.0.0.0
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./contracts:/app/contracts
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ganache
+    environment:
+      - REACT_APP_ETH_NETWORK=http://ganache:8545

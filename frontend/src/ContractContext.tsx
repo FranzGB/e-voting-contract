@@ -1,5 +1,5 @@
 import React, { createContext } from 'react';
-import { BallotContract } from '../types/web3-v1-contracts';
+import { BallotContract } from '../../types/web3-v1-contracts';
 
 
 interface ContractContextProps {

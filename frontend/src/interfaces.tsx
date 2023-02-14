@@ -8,7 +8,7 @@ export interface IProposal {
   proposalId: string;
   status: string;
 };
-interface IStatus<>{
+interface IStatus{
   [idx:string]: {title: string, badge: JSX.Element};
 }
 export const Status:IStatus = {

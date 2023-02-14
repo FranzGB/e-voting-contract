@@ -2,11 +2,11 @@ import React, {useState,useEffect} from 'react';
 import { IProposal } from './interfaces';
 import ProposalForm from "./components/ProposalForm";
 import { ContractContext } from './ContractContext';
-import ballotContractJson from '../build/contracts/BallotContract.json';
+import ballotContractJson from '../../build/contracts/BallotContract.json';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './main.css';
 import Web3 from 'web3';
-import { BallotContract } from '../types/web3-v1-contracts';
+import { BallotContract } from '../../types/web3-v1-contracts';
 import ProposalListContainer from './components/ProposalListContainer';
 
 interface AppProps {

@@ -9,7 +9,7 @@ interface ProposalComponentProps {
   proposal: IProposal;
 }
 
-const ProposalComponent: React.FunctionComponent<ProposalComponentProps> = ({
+const ProposalComponent: React.FC<ProposalComponentProps> = ({
   proposal
 }) => {
 
