@@ -22,9 +22,7 @@
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-require("ts-node").register({
-  files: true,
-});
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -43,21 +41,26 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-     development: {
-      host: "127.0.0.1",     // Localhost (default: none)
+    local_development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "1",
+    },
+    development: {
+      host: "ganache-cli",   // Ganache
       port: 8545,            // Standard Ethereum port (default: none)
-      network_id: "1",       // Any network (default: none)
-     },
-     testing: {
+      network_id: "*",       // Any network (default: none)
+    },
+    testing: {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 8546,            // Standard Ethereum port (default: none)
       network_id: "2",       // Any network (default: none)
-      },
-      production: {
+    },
+    production: {
       host: "0.0.0.0",
-      port: 8545,
+      port: 8548,
       network_id: "100",
-      }
+    }
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

@@ -1,19 +1,33 @@
 version: '3'
 
 services:
-  ganache:
+  ganache-cli:
     image: trufflesuite/ganache-cli
-    command: ganache-cli -i 1 -p 8545
+    container_name: ganache_cli
+    command: ganache-cli -h 0.0.0.0 -p 8545
     ports:
       - "8545:8545"
-
-  frontend:
-    build: .
-    command: truffle migrate
-    ports:
-      - "3000:3000"
-      - "8547:8545"
+  truffle:
+    container_name: truffle
+    build:
+      context: .
+      dockerfile: truffle.Dockerfile
     depends_on:
-      - ganache
-    environment:
-      NODE_ENV: production
+      - ganache-cli
+    healthcheck:
+      test: curl -sf -X POST --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' localhost:8545
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    tty: true
+    ports:
+      - "3000:8080"
+    command: npm run dev
+
+  # webpack:
+  #   build: .
+  #   depends_on:
+  #     - ganache
+  #   ports:
+  #     - "3000:3000"
+  #   command: npm run start
