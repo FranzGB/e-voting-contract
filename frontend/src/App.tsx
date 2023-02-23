@@ -8,10 +8,12 @@ import "./main.css";
 import Web3 from "web3";
 import { BallotContract } from "../../types/web3-v1-contracts";
 import ProposalListContainer from "./components/ProposalListContainer";
-import { NETWORK_URL, NETWORK_ID } from "./constants";
+import config from "./constants";
 interface AppProps {}
 
 const App: React.FunctionComponent<AppProps> = () => {
+  const { NETWORK_ID, NETWORK_URL } = config;
+
   const web3 = new Web3(Web3.givenProvider || NETWORK_URL);
 
   const [account, setAccount] = useState("");
@@ -24,11 +26,14 @@ const App: React.FunctionComponent<AppProps> = () => {
   }
   async function getBallotContract() {
     const contractAbi = ballotContractJson.abi as AbiItem[];
+    console.log("contract abi", contractAbi);
     const contractNetwork = ballotContractJson.networks[NETWORK_ID].address;
+    console.log("contract network", contractNetwork);
     const ballotContract = new web3.eth.Contract(
       contractAbi,
       contractNetwork
     ) as unknown as BallotContract;
+    console.log("ballot contract", ballotContract);
     setContract(ballotContract);
   }
 

@@ -4,7 +4,7 @@ services:
   ganache-cli:
     image: trufflesuite/ganache-cli
     container_name: ganache_cli
-    command: ganache-cli -h 0.0.0.0 -p 8545
+    command: ganache-cli -h 0.0.0.0 -p 8545 -i 1
     ports:
       - "8545:8545"
   truffle:
