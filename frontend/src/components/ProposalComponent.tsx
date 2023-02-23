@@ -112,7 +112,7 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
           <span className="d-block my-2">{description}</span>
           {Status[status].title == "Ended" && <span>Total count: {}</span>}
           <div className="d-flex row justify-content-around">
-            {status == "0" && (
+            {!(account == creatorAddress) || status == "0" && (
               <button
                 className="col-4 btn btn-success"
                 disabled={!(account == creatorAddress)}
@@ -150,7 +150,7 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
                 Vote
               </button>
             )}
-            {status == "1" && (
+            {!(account == creatorAddress) || status == "1" && (
               <button
                 className="col-4 btn btn-danger"
                 disabled={!(account == creatorAddress)}

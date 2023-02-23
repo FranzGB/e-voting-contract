@@ -14,11 +14,11 @@ interface IStatus {
 export const Status: IStatus = {
   0: {
     title: "Created",
-    badge: <span className="badge bg-primary">Created</span>,
+    badge: <span className="badge bg-success">Created</span>,
   },
   1: {
     title: "Voting",
-    badge: <span className="badge bg-success">Voting</span>,
+    badge: <span className="badge bg-primary">In progress</span>,
   },
   2: { title: "Ended", badge: <span className="badge bg-danger">Ended</span> },
 };
