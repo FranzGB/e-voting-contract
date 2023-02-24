@@ -18,9 +18,9 @@ contract BallotContract {
     }
 
     struct HelperCounter {
-        uint256 finalResult;
-        uint256 totalVoter;
-        uint256 totalVote;
+        uint256 totalVotesInFavor;
+        uint256 totalRegisteredVoters;
+        uint256 totalVotesCast;
     }
 
     enum State {
@@ -86,7 +86,7 @@ contract BallotContract {
     );
     event VoteDone(uint256 proposalId);
     event VotingStarted(uint256 proposalId);
-    event VotingEnded(uint256 proposalId, uint256 finalResult);
+    event VotingEnded(uint256 proposalId, uint256 votesInFavor);
 
     //FUNCTIONS
     constructor() {
@@ -122,7 +122,7 @@ contract BallotContract {
         address _voterAddress,
         string memory _voterName
     ) public inState(State.Created, _proposalId) {
-        helperCounters[_proposalId].totalVoter++;
+        helperCounters[_proposalId].totalRegisteredVoters++;
         voterNames[_voterAddress] = _voterName;
         voterRegistry[_voterAddress][_proposalId] = false;
         emit VoterAdded(_proposalId, _voterAddress, _voterName);
@@ -159,8 +159,8 @@ contract BallotContract {
         if (_choice) {
             countResult[_id]++;
         }
-        votes[_id][helperCounters[_id].totalVote++] = v;
-        helperCounters[_id].totalVote++;
+        votes[_id][helperCounters[_id].totalVotesCast++] = v;
+        helperCounters[_id].totalVotesCast++;
         emit VoteDone(_id);
     }
 
@@ -172,7 +172,7 @@ contract BallotContract {
         VotingProposal memory _proposal = proposals[_id];
         _proposal.status = State.Ended;
         proposals[_id] = _proposal;
-        helperCounters[_id].finalResult = countResult[_id];
+        helperCounters[_id].totalVotesInFavor = countResult[_id];
         emit VotingEnded(_id, countResult[_id]);
     }
 }

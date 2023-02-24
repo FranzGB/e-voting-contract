@@ -22,3 +22,9 @@ export const Status: IStatus = {
   },
   2: { title: "Ended", badge: <span className="badge bg-danger">Ended</span> },
 };
+
+export interface ICounters {
+  totalVotesInFavor: string;
+  totalRegisteredVoters: string;
+  totalVotesCast: string;
+}

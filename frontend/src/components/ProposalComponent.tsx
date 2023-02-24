@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { IProposal, Status } from "../interfaces";
+import { ICounters, IProposal, Status } from "../interfaces";
 import ConfirmationModal from "./ConfirmationModal";
 import web3 from "web3";
 import { ContractContext } from "../ContractContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import VotingResultsModal from "./VotingResultsModal";
 interface ProposalComponentProps {
   proposal: IProposal;
 }
@@ -22,16 +23,23 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
   const { account, contract } = useContext(ContractContext);
   const dateCreated = new Date(web3.utils.toNumber(createdAt) * 1000);
   const [show, setShow] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const [message, setMessage] = useState("");
   const [fun, setFun] = useState<() => void>();
-  const [count, setCount] = useState({});
+  const [counters, setCounters] = useState<ICounters | null>(null);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleShowResults = () => setShowResults(true);
+  const handleCloseResults = () => setShowResults(false);
+
   const getProposalCounters = async () => {
     if (!contract) return;
-    const counters: {} = await contract.methods
+    if (!(status === "2")) return;
+    const results: ICounters = await contract.methods
       .helperCounters(web3.utils.toNumber(proposalId))
       .call();
+    setCounters(results);
   };
   const registerVoter = async () => {
     if (!contract) return;
@@ -75,7 +83,7 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
 
   useEffect(() => {
     getProposalCounters();
-  }, [count]);
+  }, [status]);
 
   return (
     <>
@@ -84,6 +92,24 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
         handleClose={handleClose}
         handleSubmit={fun!}
         message={message}
+      />
+      <VotingResultsModal
+        show={showResults}
+        handleClose={handleCloseResults}
+        proposalTitle={officialName}
+        yesVotes={counters ? parseInt(counters.totalVotesInFavor) : 0}
+        noVotes={
+          counters
+            ? parseInt(counters.totalVotesCast) -
+              parseInt(counters.totalVotesInFavor)
+            : 0
+        }
+        blankVotes={
+          counters
+            ? parseInt(counters.totalRegisteredVoters) -
+              parseInt(counters.totalVotesCast)
+            : 0
+        }
       />
       <div className="card bg-dark rounded-0 mb-2 container">
         <div className="card-header d-flex align-items-start row">
@@ -110,21 +136,31 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
         </div>
         <div className="card-body">
           <span className="d-block my-2">{description}</span>
-          {Status[status].title == "Ended" && <span>Total count: {}</span>}
+          {status == "2" && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                handleShowResults();
+              }}
+            >
+              View Results
+            </button>
+          )}
           <div className="d-flex row justify-content-around">
-            {!(account == creatorAddress) || status == "0" && (
-              <button
-                className="col-4 btn btn-success"
-                disabled={!(account == creatorAddress)}
-                onClick={() => {
-                  setMessage(messages.Initiate);
-                  setFun(() => () => initiateVote());
-                  handleShow();
-                }}
-              >
-                Initiate
-              </button>
-            )}
+            {!(account == creatorAddress) ||
+              (status == "0" && (
+                <button
+                  className="col-4 btn btn-success"
+                  disabled={!(account == creatorAddress)}
+                  onClick={() => {
+                    setMessage(messages.Initiate);
+                    setFun(() => () => initiateVote());
+                    handleShow();
+                  }}
+                >
+                  Initiate
+                </button>
+              ))}
             {status == "0" && (
               <button
                 className="col-4 btn btn-warning"
@@ -150,19 +186,20 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
                 Vote
               </button>
             )}
-            {!(account == creatorAddress) || status == "1" && (
-              <button
-                className="col-4 btn btn-danger"
-                disabled={!(account == creatorAddress)}
-                onClick={() => {
-                  setMessage(messages.End);
-                  setFun(() => () => endVote());
-                  handleShow();
-                }}
-              >
-                End
-              </button>
-            )}
+            {!(account == creatorAddress) ||
+              (status == "1" && (
+                <button
+                  className="col-4 btn btn-danger"
+                  disabled={!(account == creatorAddress)}
+                  onClick={() => {
+                    setMessage(messages.End);
+                    setFun(() => () => endVote());
+                    handleShow();
+                  }}
+                >
+                  End
+                </button>
+              ))}
           </div>
         </div>
       </div>

@@ -26,14 +26,11 @@ const App: React.FunctionComponent<AppProps> = () => {
   }
   async function getBallotContract() {
     const contractAbi = ballotContractJson.abi as AbiItem[];
-    console.log("contract abi", contractAbi);
     const contractNetwork = ballotContractJson.networks[NETWORK_ID].address;
-    console.log("contract network", contractNetwork);
     const ballotContract = new web3.eth.Contract(
       contractAbi,
       contractNetwork
     ) as unknown as BallotContract;
-    console.log("ballot contract", ballotContract);
     setContract(ballotContract);
   }
 
