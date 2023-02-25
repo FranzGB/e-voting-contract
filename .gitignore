@@ -5,3 +5,4 @@ secret.*
 types/*
 dist
 public
+logs

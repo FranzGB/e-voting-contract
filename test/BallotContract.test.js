@@ -54,10 +54,6 @@ contract("BallotContract", function (accounts) {
           ev.voterName === "John Doe"
         );
       });
-      const voterRegistered = await ballotContract.voterRegistry(
-        accounts[0],
-        proposalCounter
-      );
       const registerSomeOtherVoter = await ballotContract.addVoter(
         proposalCounter,
         "John Snow",
@@ -66,8 +62,6 @@ contract("BallotContract", function (accounts) {
         }
       );
       assert.equal(registerSomeOtherVoter.receipt.status, true);
-      assert.equal(voterRegistered.hasVoted, false);
-      assert.equal(voterRegistered.voterName, "John Doe");
     });
     it("change the status of the proposal when the vote starts", async () => {
       const tx = await ballotContract.startVote(proposalCounter);

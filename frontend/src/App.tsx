@@ -62,8 +62,32 @@ const App: React.FunctionComponent<AppProps> = () => {
     });
   }
 
-  watchCreateProposal();
+  async function watchStateChange() {
+    if (!contract) return;
+    contract.events.VotingEnded().on("data", async (event) => {
+      const proposalId = event.returnValues.proposalId;
+      const updatedProposalList = proposalList.map((proposal) => {
+        if (proposal.proposalId === proposalId) {
+          return { ...proposal, state: "2" };
+        }
+        return proposal;
+      });
+      setProposalList(updatedProposalList);
+    });
+    contract.events.VotingStarted().on("data", async (event) => {
+      const proposalId = event.returnValues.proposalId;
+      const updatedProposalList = proposalList.map((proposal) => {
+        if (proposal.proposalId === proposalId) {
+          return { ...proposal, state: "1" };
+        }
+        return proposal;
+      });
+      setProposalList(updatedProposalList);
+    });
+  }
 
+  watchCreateProposal();
+  watchStateChange();
   useEffect(() => {
     getAccounts();
     getBallotContract();

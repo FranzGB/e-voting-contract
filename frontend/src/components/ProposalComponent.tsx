@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ICounters, IProposal, Status } from "../interfaces";
 import ConfirmationModal from "./ConfirmationModal";
-import web3 from "web3";
 import { ContractContext } from "../ContractContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +20,7 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
   } = proposal;
 
   const { account, contract } = useContext(ContractContext);
-  const dateCreated = new Date(web3.utils.toNumber(createdAt) * 1000);
+  const dateCreated = new Date(parseInt(createdAt) * 1000);
   const [show, setShow] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [message, setMessage] = useState("");
@@ -37,15 +36,24 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
     if (!contract) return;
     if (!(status === "2")) return;
     const results: ICounters = await contract.methods
-      .helperCounters(web3.utils.toNumber(proposalId))
+      .helperCounters(proposalId)
       .call();
     setCounters(results);
   };
   const registerVoter = async () => {
     if (!contract) return;
-    return contract.methods.addVoter(proposalId, account, "John Doe").send({
-      from: account,
-    });
+    contract.methods
+      .addVoter(proposalId, "Mac Miller")
+      .send({
+        from: account,
+      })
+      .on("receipt", function (receipt) {
+        console.log(receipt); // Log the receipt
+      })
+      .on("error", function (error) {
+        console.error(error); // Log any error messages to the console
+        // Check if the error message is a revert error
+      });
   };
   const initiateVote = async () => {
     if (!contract) return;

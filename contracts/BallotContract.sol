@@ -41,9 +41,8 @@ contract BallotContract {
 
     mapping(uint256 => uint256) private countResult;
     mapping(uint256 => HelperCounter) public helperCounters; //uint256 ProposalId
-    mapping(uint256 => mapping(uint256 => Vote)) private votes;
     // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
-    mapping(address => mapping(uint256 => Voter)) public voterRegistry;
+    mapping(address => mapping(uint256 => Voter)) private voterRegistry;
     mapping(uint256 => VotingProposal) public proposals;
 
     //MODIFIERS
@@ -184,7 +183,6 @@ contract BallotContract {
         if (_choice) {
             countResult[_id]++;
         }
-        votes[_id][helperCounters[_id].totalVotesCast++] = v;
         helperCounters[_id].totalVotesCast++;
         emit VoteDone(_id);
     }

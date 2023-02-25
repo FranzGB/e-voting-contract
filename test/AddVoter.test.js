@@ -1,5 +1,6 @@
 const assert = require("assert");
 const BallotContract = artifacts.require("BallotContract");
+const truffleAssert = require("truffle-assertions");
 
 contract("Ballot Contract", async (accounts) => {
   let ballotContract;
@@ -17,17 +18,18 @@ contract("Ballot Contract", async (accounts) => {
   describe("Add Voters", () => {
     it("adds voters to the proposal", async () => {
       // Add a voter to the proposal
-      await ballotContract.addVoter(proposalCount, "Voter 1", {
+      const tx = await ballotContract.addVoter(proposalCount, "Voter 1", {
         from: accounts[1],
       });
       // Check if the voter has been added
-      let voter = await ballotContract.voterRegistry(
-        accounts[1],
-        proposalCount
-      );
-      assert.strictEqual(voter.voterAddress, accounts[1]);
-      assert.strictEqual(voter.voterName, "Voter 1");
-      assert.strictEqual(voter.hasVoted, false);
+
+      truffleAssert.eventEmitted(tx, "VoterAdded", (ev) => {
+        return (
+          ev.proposalId.toNumber() === proposalCount.toNumber() &&
+          ev.voterAddress === accounts[1] &&
+          ev.voterName === "Voter 1"
+        );
+      });
     });
 
     it("should fail if the proposal is not in the created state", async () => {
