@@ -12,6 +12,12 @@ contract BallotContract {
         State status;
     }
 
+    struct Voter {
+        address voterAddress;
+        string voterName;
+        bool hasVoted;
+    }
+
     struct Vote {
         uint256 proposalId; //This id refers to the proposal
         bool choice; //Support or not
@@ -35,10 +41,9 @@ contract BallotContract {
 
     mapping(uint256 => uint256) private countResult;
     mapping(uint256 => HelperCounter) public helperCounters; //uint256 ProposalId
-    mapping(address => string) public voterNames;
     mapping(uint256 => mapping(uint256 => Vote)) private votes;
     // A proposal id is the key for the vote counter that maps a vote, this is private so in theory is not accessible.
-    mapping(address => mapping(uint256 => bool)) public voterRegistry;
+    mapping(address => mapping(uint256 => Voter)) public voterRegistry;
     mapping(uint256 => VotingProposal) public proposals;
 
     //MODIFIERS
@@ -63,9 +68,26 @@ contract BallotContract {
     modifier hasNotVoted(uint256 _id) {
         VotingProposal memory _proposal = proposals[_id];
         require(
-            bytes(voterNames[msg.sender]).length != 0 &&
-                !voterRegistry[msg.sender][_id],
+            voterRegistry[msg.sender][_id].hasVoted == false,
             "Error: You have already cast your vote on this proposal or you are not registered as a voter"
+        );
+        _;
+    }
+
+    modifier hasRegistered(uint256 _id) {
+        VotingProposal memory _proposal = proposals[_id];
+        require(
+            voterRegistry[msg.sender][_id].voterAddress != address(0),
+            "Error: You are not registered as a voter for this proposal"
+        );
+        _;
+    }
+
+    modifier hasNotRegistered(uint256 _id) {
+        VotingProposal memory _proposal = proposals[_id];
+        require(
+            voterRegistry[msg.sender][_id].voterAddress == address(0),
+            "Error: You are already registered as a voter for this proposal"
         );
         _;
     }
@@ -117,15 +139,17 @@ contract BallotContract {
         );
     }
 
-    function addVoter(
-        uint256 _proposalId,
-        address _voterAddress,
-        string memory _voterName
-    ) public inState(State.Created, _proposalId) {
+    function addVoter(uint256 _proposalId, string memory _voterName)
+        public
+        inState(State.Created, _proposalId)
+        hasNotRegistered(_proposalId)
+        hasNotVoted(_proposalId)
+    {
         helperCounters[_proposalId].totalRegisteredVoters++;
-        voterNames[_voterAddress] = _voterName;
-        voterRegistry[_voterAddress][_proposalId] = false;
-        emit VoterAdded(_proposalId, _voterAddress, _voterName);
+        voterRegistry[msg.sender][_proposalId].voterAddress = msg.sender;
+        voterRegistry[msg.sender][_proposalId].voterName = _voterName;
+        voterRegistry[msg.sender][_proposalId].hasVoted = false;
+        emit VoterAdded(_proposalId, msg.sender, _voterName);
     }
 
     function deleteProposal(uint256 _id)
@@ -149,10 +173,11 @@ contract BallotContract {
 
     function doVote(uint256 _id, bool _choice)
         public
+        hasRegistered(_id)
         hasNotVoted(_id)
         inState(State.Voting, _id)
     {
-        voterRegistry[msg.sender][_id] = true;
+        voterRegistry[msg.sender][_id].hasVoted = true;
         Vote memory v;
         v.proposalId = _id;
         v.choice = _choice;
