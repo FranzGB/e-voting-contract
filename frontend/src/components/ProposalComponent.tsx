@@ -7,9 +7,13 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import VotingResultsModal from "./VotingResultsModal";
 interface ProposalComponentProps {
   proposal: IProposal;
+  onRemoved: (proposalId: string) => void;
 }
 
-const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
+const ProposalComponent: React.FC<ProposalComponentProps> = ({
+  proposal,
+  onRemoved,
+}) => {
   const {
     proposalId,
     officialName,
@@ -84,9 +88,14 @@ const ProposalComponent: React.FC<ProposalComponentProps> = ({ proposal }) => {
 
   const removeProposal = async () => {
     if (!contract) return;
-    return contract.methods.deleteProposal(proposalId).send({
-      from: account,
-    });
+    contract.methods
+      .deleteProposal(proposalId)
+      .send({
+        from: account,
+      })
+      .then(() => {
+        onRemoved(proposalId);
+      });
   };
 
   useEffect(() => {

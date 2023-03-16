@@ -5,17 +5,21 @@ import { IProposal } from "../interfaces";
 
 interface ProposalListContainerProps {
   proposalList: IProposal[];
+  onRemoved: (proposalId: string) => void;
 }
 
 const ProposalListContainer: React.FunctionComponent<
   ProposalListContainerProps
-> = ({ proposalList }) => {
+> = ({ proposalList, onRemoved }) => {
   const [proposalListState, setProposalListState] =
     React.useState<IProposal[]>(proposalList);
 
   useEffect(() => {
     setProposalListState(
-      R.filter((proposal:IProposal) => proposal.officialName !== "", proposalList)
+      R.filter(
+        (proposal: IProposal) => proposal.officialName !== "",
+        proposalList
+      )
     );
   }, [proposalList]);
 
@@ -24,7 +28,11 @@ const ProposalListContainer: React.FunctionComponent<
       {R.isEmpty(proposalList)
         ? "Loading..."
         : proposalListState.map((proposal, idx) => (
-            <ProposalComponent proposal={proposal} key={idx} />
+            <ProposalComponent
+              proposal={proposal}
+              key={idx}
+              onRemoved={onRemoved}
+            />
           ))}
     </div>
   );
