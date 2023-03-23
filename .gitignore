@@ -6,3 +6,4 @@ types/*
 dist
 public
 logs
+.env

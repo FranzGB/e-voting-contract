@@ -9,6 +9,7 @@ import Web3 from "web3";
 import { BallotContract } from "../../types/web3-v1-contracts";
 import ProposalListContainer from "./components/ProposalListContainer";
 import config from "./constants";
+import { Button } from "react-bootstrap";
 interface AppProps {}
 
 const App: React.FunctionComponent<AppProps> = () => {
@@ -19,13 +20,24 @@ const App: React.FunctionComponent<AppProps> = () => {
   const [account, setAccount] = useState("");
   const [contract, setContract] = useState<BallotContract | null>(null);
   const [proposalList, setProposalList] = useState<IProposal[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
+
+  async function connectWallet() {
+    if (typeof window.ethereum !== "undefined") {
+      window.ethereum.request({ method: "eth_requestAccounts" }).then(() => {
+        setIsConnected(true);
+      });
+    }
+  }
 
   async function getAccounts() {
+    if (!isConnected) return;
     const accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
   }
 
   async function getBallotContract() {
+    if (!isConnected) return;
     const contractAbi = ballotContractJson.abi as AbiItem[];
     const contractNetwork = ballotContractJson.networks[NETWORK_ID].address;
     const ballotContract = new web3.eth.Contract(
@@ -60,7 +72,7 @@ const App: React.FunctionComponent<AppProps> = () => {
   useEffect(() => {
     getAccounts();
     getBallotContract();
-  }, []);
+  }, [isConnected]);
 
   useEffect(() => {
     getProposals();
@@ -98,13 +110,17 @@ const App: React.FunctionComponent<AppProps> = () => {
   return (
     <div className="container py-5">
       <div className="row">
-        <ContractContext.Provider value={{ account, contract }}>
-          <ProposalForm />
-          <ProposalListContainer
-            proposalList={proposalList}
-            onRemoved={handleProposalRemoved}
-          />
-        </ContractContext.Provider>
+        {isConnected ? (
+          <ContractContext.Provider value={{ account, contract }}>
+            <ProposalForm />
+            <ProposalListContainer
+              proposalList={proposalList}
+              onRemoved={handleProposalRemoved}
+            />
+          </ContractContext.Provider>
+        ) : (
+          <Button onClick={connectWallet}>Connect to MetaMask</Button>
+        )}
       </div>
     </div>
   );
