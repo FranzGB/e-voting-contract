@@ -31,5 +31,5 @@ COPY build/contracts ./frontend/public/contracts
 # Install dependencies
 WORKDIR /frontend
 RUN npm ci
-
+CMD [ "npm", "run", "dev" ]
 

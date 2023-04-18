@@ -1,10 +1,13 @@
 const PrivateKeyProvider = require("@truffle/hdwallet-provider");
 const privateKey = process.env.BESU_NODE_PRIVATE_KEY;
-console.log("privateKey", privateKey);
-const privateKeyProvider = new PrivateKeyProvider(
-  privateKey,
-  "http://127.0.0.1:8546/"
-);
+let privateKeyProvider;
+if (privateKey) {
+  console.log("privateKey", privateKey);
+  privateKeyProvider = new PrivateKeyProvider(
+    privateKey,
+    "http://127.0.0.1:8546/"
+  );
+}
 
 module.exports = {
   networks: {

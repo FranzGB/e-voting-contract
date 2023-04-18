@@ -2,11 +2,10 @@ version: '3'
 
 services:
   ganache-cli:
+    network_mode: host
     image: trufflesuite/ganache-cli
     container_name: ganache_cli
     command: ganache-cli -h 0.0.0.0 -p 8545 -i 1
-    ports:
-      - "8545:8545"
   truffle:
     container_name: truffle
     build:
@@ -22,7 +21,6 @@ services:
     tty: true
     ports:
       - "3000:8080"
-    command: npm run dev
 
   # webpack:
   #   build: .
