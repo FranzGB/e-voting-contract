@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
-import { ContractContext } from "../ContractContext";
+import React, { useContext, useState } from 'react';
+
+import { ContractContext } from '../ContractContext';
 
 interface ProposalFormProps {}
 const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {

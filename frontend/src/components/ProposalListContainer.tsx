@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
-import * as R from "ramda";
-import ProposalComponent from "./ProposalComponent";
-import { IProposal } from "../interfaces";
+import * as R from 'ramda';
+import React, { useEffect } from 'react';
+
+import { IProposal } from '../interfaces';
+import ProposalComponent from './ProposalComponent';
 
 interface ProposalListContainerProps {
   proposalList: IProposal[];

@@ -1,13 +1,6 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
-import {
-  PieChart,
-  ResponsiveContainer,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-} from "recharts";
+import React from 'react';
+import { Modal } from 'react-bootstrap';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 type VotingResultProps = {
   show: boolean;

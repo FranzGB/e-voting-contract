@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { ICounters, IProposal, Status } from "../interfaces";
-import ConfirmationModal from "./ConfirmationModal";
-import { ContractContext } from "../ContractContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import VotingResultsModal from "./VotingResultsModal";
+import React, { useContext, useEffect, useState } from 'react';
+
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { ContractContext } from '../ContractContext';
+import { ICounters, IProposal, Status } from '../interfaces';
+import ConfirmationModal from './ConfirmationModal';
+import VotingResultsModal from './VotingResultsModal';
+
 interface ProposalComponentProps {
   proposal: IProposal;
   onRemoved: (proposalId: string) => void;

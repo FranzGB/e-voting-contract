@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { IProposal } from "./interfaces";
-import ProposalForm from "./components/ProposalForm";
-import { ContractContext } from "./ContractContext";
-import ballotContractJson from "../public/contracts/BallotContract.json";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./main.css";
-import Web3 from "web3";
-import { BallotContract } from "../../types/web3-v1-contracts";
-import ProposalListContainer from "./components/ProposalListContainer";
-import config from "./constants";
-import { Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './main.css';
+
+import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
+import Web3 from 'web3';
+
+import { BallotContract } from '../../types/web3-v1-contracts';
+import ballotContractJson from '../public/contracts/BallotContract.json';
+import ProposalForm from './components/ProposalForm';
+import ProposalListContainer from './components/ProposalListContainer';
+import config from './constants';
+import { ContractContext } from './ContractContext';
+import { IProposal } from './interfaces';
+
 interface AppProps {}
 
 const App: React.FunctionComponent<AppProps> = () => {

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import React, { useState } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 
 interface IConfirmationModalProps {
   show: boolean;
