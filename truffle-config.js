@@ -1,11 +1,16 @@
 const PrivateKeyProvider = require("@truffle/hdwallet-provider");
-const privateKey = process.env.BESU_NODE_PRIVATE_KEY;
+const privateKey = [
+  process.env.BESU_NODE_PRIVATE_KEY_1,
+  process.env.BESU_NODE_PRIVATE_KEY_2,
+  process.env.BESU_NODE_PRIVATE_KEY_3,
+];
 let privateKeyProvider;
 if (privateKey) {
-  console.log("privateKey", privateKey);
   privateKeyProvider = new PrivateKeyProvider(
     privateKey,
-    "http://127.0.0.1:8546/"
+    "http://127.0.0.1:8546/",
+    0,
+    3
   );
 }
 

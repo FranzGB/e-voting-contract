@@ -1,17 +1,17 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './main.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./main.css";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import Web3 from 'web3';
+import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import Web3 from "web3";
 
-import { BallotContract } from '../../types/web3-v1-contracts';
-import ballotContractJson from '../public/contracts/BallotContract.json';
-import ProposalForm from './components/ProposalForm';
-import ProposalListContainer from './components/ProposalListContainer';
-import config from './constants';
-import { ContractContext } from './ContractContext';
-import { IProposal } from './interfaces';
+import { BallotContract } from "../../types/web3-v1-contracts";
+import ballotContractJson from "../public/contracts/BallotContract.json";
+import ProposalForm from "./components/ProposalForm";
+import ProposalListContainer from "./components/ProposalListContainer";
+import config from "./constants";
+import { ContractContext } from "./ContractContext";
+import { IProposal } from "./interfaces";
 
 interface AppProps {}
 
@@ -23,12 +23,15 @@ const App: React.FunctionComponent<AppProps> = () => {
   const [account, setAccount] = useState("");
   const [contract, setContract] = useState<BallotContract | null>(null);
   const [proposalList, setProposalList] = useState<IProposal[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean>(
+    JSON.parse(localStorage.getItem("isConnected") || "false")
+  );
 
   async function connectWallet() {
     if (typeof window.ethereum !== "undefined") {
       window.ethereum.request({ method: "eth_requestAccounts" }).then(() => {
         setIsConnected(true);
+        localStorage.setItem("isConnected", "true");
       });
     }
   }

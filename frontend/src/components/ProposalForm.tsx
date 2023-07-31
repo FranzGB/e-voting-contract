@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 
-import { ContractContext } from '../ContractContext';
+import { ContractContext } from "../ContractContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
 
 interface ProposalFormProps {}
 const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
@@ -31,9 +33,13 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
   return (
     <div className="col-md-4">
       <div className="card card-body rounded-1 mb-4 bg-dark">
-        <h1>E-Voting Platform</h1>
+        <h1>
+          E-Voting Platform <FontAwesomeIcon icon={faCheckToSlot} />
+        </h1>
         <span>Wallet</span>
-        <span id="account">{account}</span>
+        <span id="account" className="text-muted text-nowrap">
+          {account}
+        </span>
       </div>
       <form
         action=""
@@ -53,7 +59,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
         <textarea
           name="description"
           placeholder="Explain your idea"
-          rows={15}
+          rows={20}
           className="form-control bg-dark text-white border-0 my-4"
           value={description}
           onInput={(e) => setDescription(e.currentTarget.value)}
@@ -62,7 +68,7 @@ const ProposalForm: React.FunctionComponent<ProposalFormProps> = () => {
           className="btn btn-primary"
           onClick={() => createProposal(title, description)}
         >
-          Save
+          Submit
         </button>
       </form>
     </div>
